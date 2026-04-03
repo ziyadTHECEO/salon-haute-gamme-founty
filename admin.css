@@ -1,0 +1,793 @@
+/* ================================================================
+   ADMIN.CSS — Salon Haute Gamme Founty
+   Dashboard d'administration
+   Design system : identique au site vitrine
+   ================================================================ */
+
+/* ══════════════════════════════════════
+   LOGIN SCREEN
+   ══════════════════════════════════════ */
+.login-screen {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 400px;
+    background: var(--noir-card);
+    border: 1px solid rgba(184,125,106,0.12);
+    padding: 3rem 2.5rem;
+    text-align: center;
+}
+
+.login-brand {
+    font-family: var(--font-heading);
+    font-size: 1.8rem;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    margin-bottom: 0.3rem;
+}
+
+.login-brand span {
+    font-weight: 400;
+    color: var(--text-light);
+    font-size: 0.85em;
+}
+
+.login-subtitle {
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 2.5rem;
+}
+
+.login-form .form-group {
+    margin-bottom: 1.2rem;
+    text-align: left;
+}
+
+.login-form .form-label {
+    display: block;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.5rem;
+}
+
+.login-form .form-input {
+    width: 100%;
+    padding: 0.9rem 1rem;
+    border: 1px solid rgba(184,125,106,0.2);
+    background: var(--noir);
+    font-family: var(--font-body);
+    font-size: 0.88rem;
+    color: var(--cream);
+    transition: border-color 0.3s ease;
+    outline: none;
+}
+
+.login-form .form-input::placeholder { color: var(--text-muted); font-weight: 300; }
+.login-form .form-input:focus { border-color: var(--gold); }
+
+.login-error {
+    font-size: 0.75rem;
+    color: #C0392B;
+    min-height: 1.2rem;
+    margin-bottom: 0.5rem;
+}
+
+.btn-login {
+    width: 100%;
+    padding: 1rem;
+    border: none;
+    background: var(--gold);
+    color: #fff;
+    font-family: var(--font-body);
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.btn-login:hover {
+    background: var(--gold-light);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 30px rgba(184,125,106,0.25);
+}
+
+/* ══════════════════════════════════════
+   TOPBAR
+   ══════════════════════════════════════ */
+.admin-topbar {
+    background: rgba(253,242,240,0.95);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(184,125,106,0.15);
+    padding: 0.8rem 2rem;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+}
+
+.topbar-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.admin-logo {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+    text-decoration: none;
+}
+
+.admin-logo span {
+    font-weight: 400;
+    color: var(--text-light);
+    font-size: 0.85em;
+}
+
+.topbar-right {
+    display: flex;
+    align-items: center;
+    gap: 1.2rem;
+}
+
+.admin-user {
+    font-size: 0.7rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    letter-spacing: 0.05em;
+}
+
+.btn-logout {
+    padding: 0.5rem 1rem;
+    border: 1px solid rgba(184,125,106,0.3);
+    background: transparent;
+    color: var(--text-muted);
+    font-family: var(--font-body);
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-logout:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+/* ══════════════════════════════════════
+   TAB NAV
+   ══════════════════════════════════════ */
+.tab-nav {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1.5rem 2rem 0;
+    display: flex;
+    gap: 0;
+    border-bottom: 1px solid rgba(184,125,106,0.12);
+}
+
+.tab-btn {
+    padding: 0.8rem 1.8rem;
+    border: none;
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s ease;
+}
+
+.tab-btn i {
+    margin-right: 0.4rem;
+}
+
+.tab-btn::after {
+    content: '';
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background: var(--gold);
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.tab-btn:hover { color: var(--gold); }
+.tab-btn.active { color: var(--gold); }
+.tab-btn.active::after { transform: scaleX(1); }
+
+.tab-content {
+    display: none;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.tab-content.active {
+    display: block;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+/* ══════════════════════════════════════
+   STAT CARDS
+   ══════════════════════════════════════ */
+.stat-cards {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: var(--noir-card);
+    border: 1px solid rgba(184,125,106,0.1);
+    padding: 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.stat-label {
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.stat-value {
+    font-family: var(--font-heading);
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--cream);
+    line-height: 1;
+}
+
+/* ══════════════════════════════════════
+   CHARTS
+   ══════════════════════════════════════ */
+.charts-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.chart-card {
+    background: var(--noir-card);
+    border: 1px solid rgba(184,125,106,0.1);
+    padding: 1.5rem;
+}
+
+.chart-title {
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--cream);
+    margin-bottom: 1.2rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid rgba(184,125,106,0.1);
+}
+
+.chart-wrap {
+    height: 220px;
+    position: relative;
+}
+
+.chart-wrap svg {
+    width: 100%;
+    height: 100%;
+}
+
+.donut-wrap {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.donut-legend {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    flex-shrink: 0;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.72rem;
+    color: var(--text-light);
+}
+
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    flex-shrink: 0;
+}
+
+.bar-label {
+    font-family: var(--font-body);
+    font-size: 9px;
+    fill: var(--text-muted);
+    font-weight: 500;
+}
+
+.bar-value {
+    font-family: var(--font-heading);
+    font-size: 11px;
+    fill: var(--cream);
+    font-weight: 500;
+}
+
+.axis-label {
+    font-family: var(--font-body);
+    font-size: 8px;
+    fill: var(--text-muted);
+    font-weight: 400;
+}
+
+/* ══════════════════════════════════════
+   CALENDAR
+   ══════════════════════════════════════ */
+.calendar-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.cal-week-title {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    font-weight: 500;
+    color: var(--cream);
+    min-width: 220px;
+    text-align: center;
+}
+
+.cal-nav-btn {
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(184,125,106,0.2);
+    background: var(--noir-card);
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    transition: all 0.2s ease;
+}
+
+.cal-nav-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.cal-today-btn {
+    margin-left: auto;
+    padding: 0.5rem 1.2rem;
+    border: 1px solid rgba(184,125,106,0.2);
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.cal-today-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: 60px repeat(7, 1fr);
+    border: 1px solid rgba(184,125,106,0.1);
+    min-height: 600px;
+}
+
+.cal-corner {
+    background: var(--noir-light);
+    border-right: 1px solid rgba(184,125,106,0.1);
+    border-bottom: 1px solid rgba(184,125,106,0.1);
+}
+
+.cal-day-header {
+    background: var(--noir-light);
+    padding: 0.8rem 0.5rem;
+    text-align: center;
+    border-right: 1px solid rgba(184,125,106,0.1);
+    border-bottom: 1px solid rgba(184,125,106,0.1);
+}
+
+.cal-day-header:last-child {
+    border-right: none;
+}
+
+.cal-day-header.today {
+    background: rgba(184,125,106,0.1);
+}
+
+.cal-day-name {
+    display: block;
+    font-size: 0.55rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.cal-day-num {
+    display: block;
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: var(--cream);
+    line-height: 1.3;
+}
+
+.cal-day-header.today .cal-day-num {
+    color: var(--gold);
+}
+
+.cal-hour-label {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.6rem;
+    font-weight: 500;
+    color: var(--text-muted);
+    text-align: right;
+    border-right: 1px solid rgba(184,125,106,0.1);
+    border-bottom: 1px solid rgba(184,125,106,0.05);
+    height: 50px;
+    display: flex;
+    align-items: flex-start;
+    justify-content: flex-end;
+}
+
+.cal-cell {
+    border-right: 1px solid rgba(184,125,106,0.06);
+    border-bottom: 1px solid rgba(184,125,106,0.05);
+    position: relative;
+    min-height: 50px;
+    padding: 2px;
+}
+
+.cal-cell:nth-child(8n+1) {
+    border-right: 1px solid rgba(184,125,106,0.1);
+}
+
+.cal-rdv {
+    background: rgba(184,125,106,0.1);
+    border-left: 3px solid var(--gold);
+    padding: 0.3rem 0.5rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-bottom: 2px;
+}
+
+.cal-rdv:hover {
+    background: rgba(184,125,106,0.18);
+}
+
+.cal-rdv-time {
+    font-size: 0.55rem;
+    font-weight: 600;
+    color: var(--gold);
+    letter-spacing: 0.05em;
+}
+
+.cal-rdv-name {
+    font-size: 0.65rem;
+    font-weight: 400;
+    color: var(--cream);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.cal-rdv.status-advance_paid {
+    border-left-color: #27AE60;
+    background: rgba(39,174,96,0.08);
+}
+
+.cal-rdv.status-completed {
+    border-left-color: var(--text-muted);
+    background: rgba(138,117,112,0.08);
+    opacity: 0.6;
+}
+
+.cal-rdv.status-cancelled {
+    border-left-color: #C0392B;
+    background: rgba(192,57,43,0.06);
+    opacity: 0.5;
+    text-decoration: line-through;
+}
+
+/* ══════════════════════════════════════
+   MODAL
+   ══════════════════════════════════════ */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(45,31,27,0.4);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+}
+
+.modal-overlay.open {
+    display: flex;
+    animation: fadeIn 0.2s ease;
+}
+
+.modal-card {
+    background: var(--noir-card);
+    border: 1px solid rgba(184,125,106,0.12);
+    width: 100%;
+    max-width: 500px;
+    max-height: 80vh;
+    overflow-y: auto;
+    position: relative;
+    padding: 2rem;
+}
+
+.modal-close {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: transparent;
+    font-size: 1.5rem;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease;
+}
+
+.modal-close:hover { color: var(--gold); }
+
+.modal-title {
+    font-family: var(--font-heading);
+    font-size: 1.4rem;
+    font-weight: 500;
+    color: var(--cream);
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(184,125,106,0.12);
+}
+
+.modal-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    padding: 0.4rem 0;
+    font-size: 0.82rem;
+}
+
+.modal-label {
+    color: var(--text-muted);
+    font-weight: 400;
+}
+
+.modal-value {
+    color: var(--cream);
+    font-weight: 400;
+    text-align: right;
+    max-width: 60%;
+}
+
+.modal-divider {
+    height: 1px;
+    background: rgba(184,125,106,0.12);
+    margin: 0.8rem 0;
+}
+
+.modal-svc-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.25rem 0;
+    font-size: 0.78rem;
+    color: var(--text-light);
+}
+
+.modal-svc-line .price {
+    color: var(--text-muted);
+}
+
+.modal-total-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 0.6rem 0;
+}
+
+.modal-total-label {
+    font-weight: 500;
+    color: var(--cream);
+    font-size: 0.85rem;
+}
+
+.modal-total-value {
+    font-family: var(--font-heading);
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--cream);
+}
+
+.modal-status {
+    display: inline-block;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.3rem 0.8rem;
+    margin-bottom: 1rem;
+}
+
+.modal-status.status-confirmed {
+    background: rgba(184,125,106,0.12);
+    color: var(--gold);
+}
+
+.modal-status.status-advance_paid {
+    background: rgba(39,174,96,0.1);
+    color: #27AE60;
+}
+
+.modal-status.status-completed {
+    background: rgba(138,117,112,0.1);
+    color: var(--text-muted);
+}
+
+.modal-status.status-cancelled {
+    background: rgba(192,57,43,0.08);
+    color: #C0392B;
+}
+
+.modal-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(184,125,106,0.12);
+}
+
+.modal-action-btn {
+    flex: 1;
+    min-width: 120px;
+    padding: 0.7rem 1rem;
+    border: 1px solid rgba(184,125,106,0.2);
+    background: transparent;
+    font-family: var(--font-body);
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-light);
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+.modal-action-btn:hover {
+    border-color: var(--gold);
+    color: var(--gold);
+}
+
+.modal-action-btn.action-advance {
+    border-color: #27AE60;
+    color: #27AE60;
+}
+
+.modal-action-btn.action-advance:hover {
+    background: rgba(39,174,96,0.08);
+}
+
+.modal-action-btn.action-complete {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #fff;
+}
+
+.modal-action-btn.action-complete:hover {
+    background: var(--gold-light);
+}
+
+.modal-action-btn.action-cancel {
+    border-color: #C0392B;
+    color: #C0392B;
+}
+
+.modal-action-btn.action-cancel:hover {
+    background: rgba(192,57,43,0.06);
+}
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+   ══════════════════════════════════════ */
+@media (max-width: 1024px) {
+    .stat-cards { grid-template-columns: repeat(2, 1fr); }
+    .charts-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 768px) {
+    .admin-topbar { padding: 0.8rem 1rem; }
+    .tab-nav { padding: 1rem 1rem 0; }
+    .tab-content { padding: 1.5rem 1rem; }
+
+    .stat-cards { grid-template-columns: 1fr 1fr; gap: 0.6rem; }
+    .stat-card { padding: 1rem; }
+    .stat-value { font-size: 1.5rem; }
+
+    .calendar-grid {
+        grid-template-columns: 50px repeat(7, 1fr);
+        font-size: 0.85em;
+    }
+
+    .cal-week-title { font-size: 1rem; min-width: auto; }
+    .cal-rdv-name { font-size: 0.55rem; }
+
+    .topbar-right { gap: 0.6rem; }
+    .admin-user { display: none; }
+}
+
+@media (max-width: 600px) {
+    .stat-cards { grid-template-columns: 1fr; }
+
+    .calendar-grid {
+        grid-template-columns: 40px repeat(7, 1fr);
+    }
+
+    .cal-day-name { font-size: 0.45rem; }
+    .cal-day-num { font-size: 0.9rem; }
+    .cal-hour-label { font-size: 0.5rem; padding: 0.2rem; }
+    .cal-rdv { padding: 0.2rem 0.3rem; }
+    .cal-rdv-time { font-size: 0.45rem; }
+    .cal-rdv-name { font-size: 0.5rem; }
+
+    .tab-btn { padding: 0.6rem 1rem; font-size: 0.6rem; }
+    .tab-btn i { display: none; }
+}

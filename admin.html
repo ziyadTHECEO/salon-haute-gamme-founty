@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="fr" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Salon Haute Gamme Founty</title>
+    <meta name="robots" content="noindex, nofollow">
+    <meta name="theme-color" content="#FDF2F0">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer">
+
+    <style>
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+        :root {
+            --noir: #FDF2F0;
+            --noir-light: #F7E8E5;
+            --noir-card: #FFF8F6;
+            --gold: #B87D6A;
+            --gold-light: #D4A574;
+            --gold-dim: rgba(184,125,106,0.1);
+            --cream: #2D1F1B;
+            --cream-dark: #3D2E28;
+            --text-light: #5C4A42;
+            --text-muted: #8A7570;
+            --white: #FFFFFF;
+            --font-heading: 'Cormorant', Georgia, serif;
+            --font-body: 'Montserrat', 'Helvetica Neue', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            font-family: var(--font-body);
+            background: var(--noir);
+            color: var(--text-light);
+            font-size: 15px;
+            font-weight: 300;
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--noir-light); }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+        ::selection { background: var(--gold); color: #fff; }
+
+        a:focus-visible, button:focus-visible {
+            outline: 2px solid var(--gold);
+            outline-offset: 3px;
+        }
+    </style>
+    <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+    <!-- ════════════════════════════════════
+         ÉCRAN DE CONNEXION
+         ════════════════════════════════════ -->
+    <div class="login-screen" id="login-screen">
+        <div class="login-card">
+            <div class="login-brand">Haute Gamme <span>Founty</span></div>
+            <p class="login-subtitle">Espace Administration</p>
+
+            <div class="login-form">
+                <div class="form-group">
+                    <label class="form-label" for="login-email">Email</label>
+                    <input type="email" class="form-input" id="login-email" placeholder="admin@salon.com" autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label class="form-label" for="login-password">Mot de passe</label>
+                    <input type="password" class="form-input" id="login-password" placeholder="••••••••" autocomplete="current-password">
+                </div>
+                <p class="login-error" id="login-error"></p>
+                <button class="btn-login" id="btn-login">Se connecter</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ════════════════════════════════════
+         DASHBOARD
+         ════════════════════════════════════ -->
+    <div class="dashboard" id="dashboard" style="display:none">
+
+        <!-- TOPBAR -->
+        <header class="admin-topbar">
+            <div class="topbar-inner">
+                <a href="index.html" class="admin-logo">Haute Gamme <span>Founty</span></a>
+                <div class="topbar-right">
+                    <span class="admin-user" id="admin-user"></span>
+                    <button class="btn-logout" id="btn-logout">Déconnexion</button>
+                </div>
+            </div>
+        </header>
+
+        <!-- TAB NAV -->
+        <div class="tab-nav">
+            <button class="tab-btn active" data-tab="analytics">
+                <i class="fas fa-chart-bar"></i> Analytique
+            </button>
+            <button class="tab-btn" data-tab="calendar">
+                <i class="fas fa-calendar-alt"></i> Calendrier
+            </button>
+        </div>
+
+        <!-- ════════════════════════════════
+             TAB 1 — ANALYTIQUE
+             ════════════════════════════════ -->
+        <div class="tab-content active" id="tab-analytics">
+
+            <!-- STAT CARDS -->
+            <div class="stat-cards">
+                <div class="stat-card">
+                    <span class="stat-label">RDV aujourd'hui</span>
+                    <span class="stat-value" id="stat-today">—</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">RDV à venir</span>
+                    <span class="stat-value" id="stat-week">—</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">CA cette semaine</span>
+                    <span class="stat-value" id="stat-ca">—</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Panier moyen</span>
+                    <span class="stat-value" id="stat-avg">—</span>
+                </div>
+            </div>
+
+            <!-- CHARTS -->
+            <div class="charts-grid">
+                <div class="chart-card">
+                    <h3 class="chart-title">Chiffre d'affaires / semaine</h3>
+                    <div class="chart-wrap" id="chart-ca"></div>
+                </div>
+                <div class="chart-card">
+                    <h3 class="chart-title">Clients / semaine</h3>
+                    <div class="chart-wrap" id="chart-clients"></div>
+                </div>
+                <div class="chart-card">
+                    <h3 class="chart-title">Répartition par catégorie</h3>
+                    <div class="chart-wrap donut-wrap" id="chart-donut"></div>
+                </div>
+                <div class="chart-card">
+                    <h3 class="chart-title">Heures de pointe</h3>
+                    <div class="chart-wrap" id="chart-hours"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ════════════════════════════════
+             TAB 2 — CALENDRIER
+             ════════════════════════════════ -->
+        <div class="tab-content" id="tab-calendar">
+            <div class="calendar-header">
+                <button class="cal-nav-btn" id="cal-prev">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <h2 class="cal-week-title" id="cal-week-title">—</h2>
+                <button class="cal-nav-btn" id="cal-next">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+                <button class="cal-today-btn" id="cal-today">Aujourd'hui</button>
+            </div>
+
+            <div class="calendar-grid" id="calendar-grid">
+                <!-- Generated by JS -->
+            </div>
+        </div>
+
+    </div>
+
+    <!-- ════════════════════════════════════
+         MODAL RDV
+         ════════════════════════════════════ -->
+    <div class="modal-overlay" id="modal-overlay">
+        <div class="modal-card" id="modal-card">
+            <button class="modal-close" id="modal-close">&times;</button>
+            <div class="modal-body" id="modal-body"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase-config.js"></script>
+    <script src="admin.js"></script>
+</body>
+</html>
