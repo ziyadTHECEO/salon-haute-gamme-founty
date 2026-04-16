@@ -48,3 +48,35 @@ CREATE POLICY "auth_full_access"
     TO authenticated
     USING (true)
     WITH CHECK (true);
+
+-- ════════════════════════════════════════
+-- TABLE CA MANUEL
+-- CA local (coiffure, esthétique, produits) saisi manuellement par l'admin
+-- Exécuter dans Supabase SQL Editor
+-- ════════════════════════════════════════
+CREATE TABLE ca_manuel (
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  date       DATE NOT NULL,
+  categorie  TEXT NOT NULL
+             CHECK (categorie IN (
+               'Coiffure femme',
+               'Esthétique',
+               'Coiffure homme',
+               'Produits de vente'
+             )),
+  montant    INTEGER NOT NULL,
+  note       TEXT,
+  created_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+CREATE INDEX idx_ca_manuel_date ON ca_manuel(date);
+
+ALTER TABLE ca_manuel ENABLE ROW LEVEL SECURITY;
+
+-- Accès réservé aux utilisateurs authentifiés (admins connectés)
+CREATE POLICY "auth_only_ca_manuel"
+  ON ca_manuel
+  FOR ALL
+  TO authenticated
+  USING (auth.uid() IS NOT NULL)
+  WITH CHECK (auth.uid() IS NOT NULL);

@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin — Salon Haute Gamme Founty</title>
     <meta name="robots" content="noindex, nofollow">
-    <meta name="theme-color" content="#FDF2F0">
+    <meta name="theme-color" content="#FAF5EC">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -15,16 +15,18 @@
         *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
 
         :root {
-            --noir: #FDF2F0;
-            --noir-light: #F7E8E5;
-            --noir-card: #FFF8F6;
-            --gold: #B87D6A;
-            --gold-light: #D4A574;
-            --gold-dim: rgba(184,125,106,0.1);
-            --cream: #2D1F1B;
-            --cream-dark: #3D2E28;
-            --text-light: #5C4A42;
-            --text-muted: #8A7570;
+            --noir: #FAF5EC;
+            --noir-light: #F0E4CA;
+            --noir-card: #FFFDF7;
+            --gold: #C4902D;
+            --gold-light: #E0B356;
+            --gold-dim: rgba(196,144,45,0.10);
+            --cream: #4A3020;
+            --cream-dark: #3A2418;
+            --text-light: #7C5A35;
+            --text-muted: #A07848;
+            --wood: #C08B35;
+            --wood-dark: #8B5C1E;
             --white: #FFFFFF;
             --font-heading: 'Cormorant', Georgia, serif;
             --font-body: 'Montserrat', 'Helvetica Neue', sans-serif;
@@ -115,6 +117,14 @@
         <div class="tab-content active" id="tab-analytics">
 
             <!-- STAT CARDS -->
+            <div class="stat-card stat-card-wide">
+                <span class="stat-label">CA TOTAL CONSOLIDÉ (mois)</span>
+                <span class="stat-value stat-value-large" id="a-ca-total">—</span>
+                <div class="stat-sub-row">
+                    <span class="stat-sub" id="a-ca-rdv">Réservations : — DH</span>
+                    <span class="stat-sub" id="a-ca-local">Local : — DH</span>
+                </div>
+            </div>
             <div class="stat-cards">
                 <div class="stat-card">
                     <span class="stat-label">RDV aujourd'hui</span>
@@ -152,6 +162,39 @@
                     <h3 class="chart-title">Heures de pointe</h3>
                     <div class="chart-wrap" id="chart-hours"></div>
                 </div>
+            </div>
+            <!-- SAISIE CA LOCALE -->
+            <div class="ca-locale-section">
+                <h3 class="ca-locale-title">SAISIE CA LOCALE</h3>
+                <div class="ca-locale-form">
+                    <div class="ca-form-row">
+                        <div class="ca-form-group">
+                            <label class="form-label" for="cm-date">Date</label>
+                            <input type="date" class="form-input" id="cm-date">
+                        </div>
+                        <div class="ca-form-group">
+                            <label class="form-label" for="cm-cat">Catégorie</label>
+                            <select class="form-input" id="cm-cat">
+                                <option value="Coiffure femme">Coiffure femme</option>
+                                <option value="Esthétique">Esthétique</option>
+                                <option value="Coiffure homme">Coiffure homme</option>
+                                <option value="Produits de vente">Produits de vente</option>
+                            </select>
+                        </div>
+                        <div class="ca-form-group">
+                            <label class="form-label" for="cm-montant">Montant (DH)</label>
+                            <input type="number" class="form-input" id="cm-montant" placeholder="Montant en DH" min="1">
+                        </div>
+                        <div class="ca-form-group ca-form-group-note">
+                            <label class="form-label" for="cm-note">Remarque (optionnel)</label>
+                            <input type="text" class="form-input" id="cm-note" placeholder="Remarque...">
+                        </div>
+                        <div class="ca-form-group ca-form-group-btn">
+                            <button class="btn-ca-add" id="btn-ca-add">AJOUTER</button>
+                        </div>
+                    </div>
+                </div>
+                <div id="ca-table-wrap"></div>
             </div>
         </div>
 

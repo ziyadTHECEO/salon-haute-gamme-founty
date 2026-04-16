@@ -87,6 +87,18 @@ function showDashboard(user) {
     $('#login-screen').style.display = 'none';
     $('#dashboard').style.display = '';
     $('#admin-user').textContent = user.email;
+    // Set today as default date for CA locale form
+    var today = new Date();
+    var todayStr = formatDateStr ? formatDateStr(today) : today.toISOString().slice(0, 10);
+    // formatDateStr is defined later, use inline
+    var dd = today;
+    var cmDate = dd.getFullYear() + '-' + String(dd.getMonth() + 1).padStart(2, '0') + '-' + String(dd.getDate()).padStart(2, '0');
+    setTimeout(function() {
+        var cmEl = document.getElementById('cm-date');
+        if (cmEl) cmEl.value = cmDate;
+        var addBtn = document.getElementById('btn-ca-add');
+        if (addBtn) addBtn.addEventListener('click', addCaManuel);
+    }, 100);
     loadAnalytics();
     initCalendar();
 }
@@ -131,6 +143,8 @@ function loadAnalytics() {
             renderClientsChart(data);
             renderDonut(data);
             renderHoursChart(data);
+            loadTotalCA(data);
+            loadCaManuel();
         })
         .catch(function(err) {
             console.error('Analytics fetch error:', err);
@@ -600,4 +614,147 @@ function escapeHtml(str) {
     var d = document.createElement('div');
     d.textContent = str;
     return d.innerHTML;
+}
+
+/* ══════════════════════════════════════════
+   CA TOTAL CONSOLIDÉ
+   ══════════════════════════════════════════ */
+
+function loadTotalCA(rdvs) {
+    var now = new Date();
+    var m = String(now.getMonth() + 1).padStart(2, '0');
+    var y = now.getFullYear();
+    var firstDay = y + '-' + m + '-01';
+    var lastDay  = y + '-' + m + '-31';
+
+    _supabase.from('ca_manuel')
+        .select('montant')
+        .gte('date', firstDay)
+        .lte('date', lastDay)
+        .then(function(res) {
+            var caRdv = rdvs
+                .filter(function(r) { return r.date >= firstDay && r.date <= lastDay; })
+                .reduce(function(s, r) { return s + (r.total || 0); }, 0);
+            var caManuel = res.data
+                ? res.data.reduce(function(s, r) { return s + r.montant; }, 0) : 0;
+            var caTotal = caRdv + caManuel;
+
+            var totalEl = document.getElementById('a-ca-total');
+            var rdvEl   = document.getElementById('a-ca-rdv');
+            var locEl   = document.getElementById('a-ca-local');
+            if (totalEl) totalEl.textContent = caTotal.toLocaleString('fr-FR') + ' DH';
+            if (rdvEl)   rdvEl.textContent   = 'Réservations : ' + caRdv.toLocaleString('fr-FR') + ' DH';
+            if (locEl)   locEl.textContent   = 'Local : ' + caManuel.toLocaleString('fr-FR') + ' DH';
+        })
+        .catch(function(err) {
+            console.error('loadTotalCA error:', err);
+        });
+}
+
+/* ══════════════════════════════════════════
+   SAISIE CA LOCALE
+   ══════════════════════════════════════════ */
+
+function addCaManuel() {
+    var dateEl     = document.getElementById('cm-date');
+    var catEl      = document.getElementById('cm-cat');
+    var montantEl  = document.getElementById('cm-montant');
+    var noteEl     = document.getElementById('cm-note');
+
+    var date     = dateEl ? dateEl.value : '';
+    var categorie= catEl ? catEl.value : '';
+    var montant  = parseInt(montantEl ? montantEl.value : '0');
+    var note     = noteEl ? noteEl.value.trim() || null : null;
+
+    if (!date || !categorie || !montant || montant <= 0) {
+        alert('Veuillez remplir la date, la catégorie et un montant valide.');
+        return;
+    }
+
+    var btn = document.getElementById('btn-ca-add');
+    if (btn) { btn.disabled = true; btn.textContent = '...'; }
+
+    _supabase.from('ca_manuel')
+        .insert({ date: date, categorie: categorie, montant: montant, note: note })
+        .then(function(res) {
+            if (res.error) {
+                alert('Erreur: ' + res.error.message);
+                if (btn) { btn.disabled = false; btn.textContent = 'AJOUTER'; }
+                return;
+            }
+            if (montantEl) montantEl.value = '';
+            if (noteEl) noteEl.value = '';
+            if (btn) { btn.disabled = false; btn.textContent = 'AJOUTER'; }
+            loadCaManuel();
+            loadAnalytics();
+        })
+        .catch(function(err) {
+            console.error('addCaManuel error:', err);
+            if (btn) { btn.disabled = false; btn.textContent = 'AJOUTER'; }
+        });
+}
+
+function loadCaManuel() {
+    _supabase.from('ca_manuel')
+        .select('*')
+        .order('date', { ascending: false })
+        .limit(20)
+        .then(function(res) {
+            renderCaTable(res.data || []);
+        })
+        .catch(function(err) {
+            console.error('loadCaManuel error:', err);
+            renderCaTable([]);
+        });
+}
+
+function renderCaTable(data) {
+    var wrap = document.getElementById('ca-table-wrap');
+    if (!wrap) return;
+
+    if (data.length === 0) {
+        wrap.innerHTML = '<p style="font-size:0.8rem;color:var(--text-muted);padding:1rem 0">Aucune entrée manuelle.</p>';
+        return;
+    }
+
+    var html = '<div class="ca-table-wrap"><table class="ca-table">';
+    html += '<thead><tr><th>Date</th><th>Catégorie</th><th>Montant</th><th>Note</th><th></th></tr></thead>';
+    html += '<tbody>';
+    data.forEach(function(row) {
+        html += '<tr>';
+        html += '<td>' + escapeHtml(row.date) + '</td>';
+        html += '<td>' + escapeHtml(row.categorie) + '</td>';
+        html += '<td class="ca-amount">' + row.montant.toLocaleString('fr-FR') + ' DH</td>';
+        html += '<td>' + escapeHtml(row.note || '—') + '</td>';
+        html += '<td><button class="btn-ca-del" data-id="' + row.id + '">Supprimer</button></td>';
+        html += '</tr>';
+    });
+    html += '</tbody></table></div>';
+    wrap.innerHTML = html;
+
+    wrap.querySelectorAll('.btn-ca-del').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            var id = this.dataset.id;
+            if (confirm('Supprimer cette entrée ?')) {
+                deleteCaManuel(id);
+            }
+        });
+    });
+}
+
+function deleteCaManuel(id) {
+    _supabase.from('ca_manuel')
+        .delete()
+        .eq('id', id)
+        .then(function(res) {
+            if (res.error) {
+                alert('Erreur: ' + res.error.message);
+                return;
+            }
+            loadCaManuel();
+            loadAnalytics();
+        })
+        .catch(function(err) {
+            console.error('deleteCaManuel error:', err);
+        });
 }

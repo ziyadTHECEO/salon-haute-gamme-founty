@@ -223,7 +223,6 @@ var state = {
     time: null,
     name: '',
     phone: '',
-    email: '',
     note: ''
 };
 
@@ -362,23 +361,14 @@ function renderAccordionPanel(catId) {
 /* ── BARRE DE TOTAL ── */
 function updateTotalBar() {
     var services = getSelectedServices();
-    var total = getTotal();
-    var advance = getAdvance(total);
 
     var tagsHtml = '';
     services.forEach(function(s) {
         tagsHtml += '<span class="selected-tag">' + s.name + '</span>';
     });
     $('#selected-tags').innerHTML = tagsHtml;
-    $('#total-main').textContent = total + ' DH';
-
-    var advEl = $('#total-advance');
-    if (advance > 0) {
-        advEl.textContent = 'Avance requise : ' + advance + ' DH';
-        advEl.style.display = '';
-    } else {
-        advEl.style.display = 'none';
-    }
+    $('#total-main').textContent = services.length + ' prestation' + (services.length > 1 ? 's' : '') + ' sélectionnée' + (services.length > 1 ? 's' : '');
+    $('#total-advance').style.display = 'none';
 
     $('#btn-step1-next').disabled = services.length === 0;
 
@@ -491,13 +481,10 @@ function updateStep2UI() {
 function bindFormEvents() {
     $('#input-name').addEventListener('input', function() { state.name = this.value.trim(); updateStep3UI(); });
     $('#input-phone').addEventListener('input', function() { state.phone = this.value.trim(); updateStep3UI(); });
-    $('#input-email').addEventListener('input', function() { state.email = this.value.trim(); });
     $('#input-note').addEventListener('input', function() { state.note = this.value.trim(); });
 }
 
 function updateStep3UI() {
-    var total = getTotal();
-    var advance = getAdvance(total);
     var services = getSelectedServices();
 
     var tagsHtml = '';
@@ -505,27 +492,11 @@ function updateStep3UI() {
     $('#recap-tags').innerHTML = tagsHtml;
     $('#recap-date').textContent = state.date ? state.date.label : '—';
     $('#recap-time').textContent = state.time || '—';
-    $('#recap-total').textContent = total + ' DH';
-
-    if (advance > 0) {
-        $('#recap-advance-row').style.display = '';
-        $('#recap-remain-row').style.display = '';
-        $('#recap-advance-note').style.display = '';
-        $('#recap-advance-value').textContent = advance + ' DH';
-        $('#recap-remain-value').textContent = (total - advance) + ' DH';
-    } else {
-        $('#recap-advance-row').style.display = 'none';
-        $('#recap-remain-row').style.display = 'none';
-        $('#recap-advance-note').style.display = 'none';
-    }
+    $('#recap-total').textContent = services.length + ' prestation' + (services.length > 1 ? 's' : '');
 
     var btn = $('#btn-confirm');
-    btn.disabled = !(state.name && state.phone);
-    if (advance > 0) {
-        btn.textContent = 'Confirmer & payer ' + advance + ' DH d\'avance';
-    } else {
-        btn.textContent = 'Confirmer ma réservation';
-    }
+    btn.disabled = !(state.name && state.phone.replace(/[\s\-\+\(\)]/g, '').length >= 8);
+    btn.textContent = 'Confirmer ma réservation';
 }
 
 /* ══════════════════════════════════════════
@@ -611,14 +582,13 @@ function submitReservation() {
         var payload = {
             client_name: state.name,
             client_phone: state.phone,
-            client_email: state.email || null,
             note: state.note || null,
-            services: services.map(function(s) { return { id: s.id, name: s.name, price: s.price }; }),
+            services: services.map(function(s) { return { id: s.id, name: s.name }; }),
             date: state.date.dateStr,
             time: state.time,
-            total: total,
-            advance: advance,
-            status: advance > 0 ? 'confirmed' : 'confirmed',
+            total: 0,
+            advance: 0,
+            status: 'confirmed',
             advance_paid: false
         };
 
@@ -630,7 +600,7 @@ function submitReservation() {
                 updateStep3UI();
                 return;
             }
-            showConfirmation(services, total, advance);
+            showConfirmation(services);
         }).catch(function(err) {
             console.error('Supabase error:', err);
             alert('Erreur de connexion. Veuillez réessayer.');
@@ -641,23 +611,15 @@ function submitReservation() {
     }
 
     /* Fallback sans Supabase */
-    showConfirmation(services, total, advance);
+    showConfirmation(services);
 }
 
-function showConfirmation(services, total, advance) {
+function showConfirmation(services) {
 
     var svcHtml = '';
     services.forEach(function(s) {
-        svcHtml += '<div class="confirm-svc-line"><span>' + escapeHtml(s.name) + '</span><span class="price">' + s.price + ' DH</span></div>';
+        svcHtml += '<div class="confirm-svc-line"><span>' + escapeHtml(s.name) + '</span></div>';
     });
-
-    var advHtml = '';
-    if (advance > 0) {
-        advHtml += '<div class="recap-divider"></div>';
-        advHtml += '<div class="recap-row"><span class="recap-label">Avance à payer</span><span class="recap-value" style="color:var(--gold);font-weight:500">' + advance + ' DH</span></div>';
-        advHtml += '<div class="recap-row"><span class="recap-label">Reste sur place</span><span class="recap-value">' + (total - advance) + ' DH</span></div>';
-        advHtml += '<div class="recap-advance-note"><strong>Avance requise :</strong> Une avance de ' + advance + ' DH est demandée pour confirmer votre réservation. Le reste (' + (total - advance) + ' DH) sera réglé sur place le jour du rendez-vous.</div>';
-    }
 
     var container = $('#confirmation-content');
     container.innerHTML =
@@ -668,7 +630,6 @@ function showConfirmation(services, total, advance) {
         '<h3>Récapitulatif</h3>' +
         '<div class="recap-row"><span class="recap-label">Nom</span><span class="recap-value">' + escapeHtml(state.name) + '</span></div>' +
         '<div class="recap-row"><span class="recap-label">Téléphone</span><span class="recap-value">' + escapeHtml(state.phone) + '</span></div>' +
-        (state.email ? '<div class="recap-row"><span class="recap-label">Email</span><span class="recap-value">' + escapeHtml(state.email) + '</span></div>' : '') +
         '<div class="recap-divider"></div>' +
         '<div class="recap-row"><span class="recap-label">Date</span><span class="recap-value">' + state.date.label + '</span></div>' +
         '<div class="recap-row"><span class="recap-label">Heure</span><span class="recap-value">' + state.time + '</span></div>' +
@@ -676,8 +637,7 @@ function showConfirmation(services, total, advance) {
         '<div class="recap-divider"></div>' +
         svcHtml +
         '<div class="recap-divider"></div>' +
-        '<div class="recap-row"><span class="recap-label" style="font-weight:500;color:var(--cream)">Total</span><span class="recap-total">' + total + ' DH</span></div>' +
-        advHtml +
+        '<div class="recap-row"><span class="recap-label" style="color:var(--text-muted);font-style:italic">Tarif communiqué sur place</span></div>' +
         '</div>' +
         '<button class="btn-reset" id="btn-reset">Nouvelle réservation</button>';
 
@@ -702,12 +662,10 @@ function resetReservation() {
         time: null,
         name: '',
         phone: '',
-        email: '',
         note: ''
     };
     $('#input-name').value = '';
     $('#input-phone').value = '';
-    $('#input-email').value = '';
     $('#input-note').value = '';
     closeAccordion();
     updateCategoryHighlight();
