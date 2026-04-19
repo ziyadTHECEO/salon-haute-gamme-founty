@@ -625,7 +625,8 @@ function loadTotalCA(rdvs) {
     var m = String(now.getMonth() + 1).padStart(2, '0');
     var y = now.getFullYear();
     var firstDay = y + '-' + m + '-01';
-    var lastDay  = y + '-' + m + '-31';
+    var lastDayDate = new Date(y, now.getMonth() + 1, 0); // dernier jour réel du mois
+    var lastDay  = y + '-' + m + '-' + String(lastDayDate.getDate()).padStart(2, '0');
 
     _supabase.from('ca_manuel')
         .select('montant')
