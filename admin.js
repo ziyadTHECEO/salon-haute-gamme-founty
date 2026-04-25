@@ -101,6 +101,7 @@ function showDashboard(user) {
     }, 100);
     loadAnalytics();
     initCalendar();
+    loadRH();
 }
 
 /* ══════════════════════════════════════════
@@ -118,6 +119,9 @@ function bindTabEvents() {
 
             if (tab === 'calendar') {
                 loadCalendarData();
+            }
+            if (tab === 'rh') {
+                loadRH();
             }
         });
     });
@@ -758,4 +762,36 @@ function deleteCaManuel(id) {
         .catch(function(err) {
             console.error('deleteCaManuel error:', err);
         });
+}
+
+/* ══════════════════════════════════════════
+   RH & STOCK — ÉTAT GLOBAL
+   ══════════════════════════════════════════ */
+
+var rhState = {
+    workers: [],
+    products: [],
+    assignments: []
+};
+
+function loadRH() {
+    Promise.all([
+        _supabase.from('workers').select('*').order('nom'),
+        _supabase.from('products').select('*').order('nom'),
+        _supabase.from('assignments')
+            .select('*, workers(nom, prenom, departement), products(nom, prix, capacite_clients)')
+            .order('assigned_at', { ascending: false })
+    ]).then(function(results) {
+        rhState.workers     = results[0].data || [];
+        rhState.products    = results[1].data || [];
+        rhState.assignments = results[2].data || [];
+
+        renderWorkersTable();
+        renderProductsTable();
+        renderHistoryTable();
+        updateAlertBadge();
+        renderAlertBanner();
+    }).catch(function(err) {
+        console.error('loadRH error:', err);
+    });
 }
