@@ -795,3 +795,69 @@ function loadRH() {
         console.error('loadRH error:', err);
     });
 }
+
+/* ══════════════════════════════════════════
+   RH — ALERTES
+   ══════════════════════════════════════════ */
+
+/* Retourne 'ok' | 'low' | 'critical' */
+function computeAlertState(assignment) {
+    var cap    = assignment.products ? assignment.products.capacite_clients : 0;
+    var served = assignment.clients_served || 0;
+    if (cap <= 0) return 'ok';
+    if (served >= cap) return 'critical';
+    var pctRestant = ((cap - served) / cap) * 100;
+    return pctRestant <= 30 ? 'low' : 'ok';
+}
+
+/* Badge rouge sur l'onglet */
+function updateAlertBadge() {
+    var badge = document.getElementById('rh-alert-badge');
+    if (!badge) return;
+    var count = rhState.assignments.filter(function(a) {
+        return a.status === 'active' && computeAlertState(a) !== 'ok';
+    }).length;
+    if (count > 0) {
+        badge.textContent = count;
+        badge.style.display = 'inline-flex';
+    } else {
+        badge.style.display = 'none';
+    }
+}
+
+/* Bandeau dans l'onglet RH */
+function renderAlertBanner() {
+    var banner = document.getElementById('rh-alert-banner');
+    var inner  = document.getElementById('rh-alert-banner-inner');
+    if (!banner || !inner) return;
+
+    var alerts = rhState.assignments.filter(function(a) {
+        return a.status === 'active' && computeAlertState(a) !== 'ok';
+    });
+
+    if (alerts.length === 0) {
+        banner.style.display = 'none';
+        return;
+    }
+
+    banner.style.display = 'block';
+    var html = '';
+    alerts.forEach(function(a) {
+        var state      = computeAlertState(a);
+        var workerName = a.workers ? (a.workers.prenom + ' ' + a.workers.nom) : '—';
+        var prodName   = a.products ? a.products.nom : '—';
+        var cap        = a.products ? a.products.capacite_clients : 0;
+        var restant    = cap - (a.clients_served || 0);
+
+        if (state === 'critical') {
+            html += '<div class="rh-alert-item critical"><i class="fas fa-exclamation-circle"></i>';
+            html += escapeHtml(workerName) + ' — ' + escapeHtml(prodName) + ' : ÉPUISÉE — Renouveler';
+            html += '</div>';
+        } else {
+            html += '<div class="rh-alert-item"><i class="fas fa-exclamation-triangle"></i>';
+            html += 'Attention — ' + escapeHtml(workerName) + ' — ' + escapeHtml(prodName) + ' : ' + restant + ' cliente(s) restante(s)';
+            html += '</div>';
+        }
+    });
+    inner.innerHTML = html;
+}
