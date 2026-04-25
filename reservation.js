@@ -12,71 +12,6 @@ var TAKEN_SLOTS = [];
    ================================================================ */
 var SERVICES = [
     {
-        id: 'coiffure',
-        name: 'Coiffure',
-        subcategories: [
-            {
-                name: 'Coupe & Brushing',
-                services: [
-                    { id: 'c-coupe', name: 'Coupe', price: 100 },
-                    { id: 'c-brushing-courts', name: 'Brushing courts', price: 50 },
-                    { id: 'c-brushing-longs', name: 'Brushing longs', price: 100 }
-                ]
-            },
-            {
-                name: 'Coloration',
-                services: [
-                    { id: 'c-coloration-normale', name: 'Coloration normale', price: 250 },
-                    { id: 'c-coloration-igora', name: 'Coloration Igora + Brushing', price: 350 },
-                    { id: 'c-coloration-courts-sa', name: 'Coloration + Brushing courts sans amoniaque', price: 400 },
-                    { id: 'c-coloration-longs-sa', name: 'Coloration + Brushing longs sans amoniaque', price: 500 },
-                    { id: 'c-coloration-racines', name: 'Coloration racines', price: 150 },
-                    { id: 'c-coloration-racines-sa', name: 'Coloration racines sans amoniaque', price: 250 }
-                ]
-            },
-            {
-                name: 'Décoloration',
-                services: [
-                    { id: 'c-decoloration-courts', name: 'Décoloration cheveux courts', price: 450 },
-                    { id: 'c-decoloration-longs', name: 'Décoloration cheveux longs', price: 550 }
-                ]
-            },
-            {
-                name: 'Mèches & Balayage',
-                services: [
-                    { id: 'c-meches-courts', name: 'Mèches + Brushing courts', price: 700 },
-                    { id: 'c-meches-longs', name: 'Mèches + Brushing longs', price: 1300 },
-                    { id: 'c-balayage-courts', name: 'Balayage + Brushing courts', price: 800 },
-                    { id: 'c-balayage-longs', name: 'Balayage + Brushing longs', price: 1400 }
-                ]
-            },
-            {
-                name: 'Soins cheveux',
-                services: [
-                    { id: 'c-soin-nutrition', name: 'Soin nutrition intense', price: 200 },
-                    { id: 'c-soin-sublimateur', name: 'Soin sublimateur', price: 300 },
-                    { id: 'c-soin-plex', name: 'Soin Plex Forte', price: 500 },
-                    { id: 'c-soin-olaplex', name: 'Soin Olaplex Forte', price: 600 },
-                    { id: 'c-soin-myorganics', name: 'Soin My.Organics', price: 300 }
-                ]
-            },
-            {
-                name: 'Lissage',
-                services: [
-                    { id: 'c-lissage-proteine', name: 'Lissage protéine normal', price: 700 },
-                    { id: 'c-lissage-diamond', name: 'Lissage Black Diamond', price: 1300 }
-                ]
-            },
-            {
-                name: 'Shampoing & Masque',
-                services: [
-                    { id: 'c-shampoing-macadamia', name: 'Shampoing + Masque Macadamia', price: 30 },
-                    { id: 'c-shampoing-loreal', name: 'Shampoing + Masque L\'Oréal', price: 50 }
-                ]
-            }
-        ]
-    },
-    {
         id: 'ongles',
         name: 'Ongles',
         subcategories: [
@@ -120,37 +55,6 @@ var SERVICES = [
                     { id: 'o-remplissage-gel', name: 'Remplissage gel', price: 200 },
                     { id: 'o-depose-gel', name: 'Dépose gel', price: 100 },
                     { id: 'o-depose-vernis-gel', name: 'Dépose vernis gel', price: 50 }
-                ]
-            }
-        ]
-    },
-    {
-        id: 'soins-visage',
-        name: 'Soins Visage',
-        subcategories: [
-            {
-                name: 'Classiques',
-                services: [
-                    { id: 'v-hydratant', name: 'Soin hydratant', price: 200 },
-                    { id: 'v-nourrissant', name: 'Soin nourrissant', price: 200 },
-                    { id: 'v-eclat', name: 'Soin éclat', price: 230 }
-                ]
-            },
-            {
-                name: 'Spécifiques',
-                services: [
-                    { id: 'v-normal', name: 'Soin normal', price: 300 },
-                    { id: 'v-apaisant', name: 'Soin apaisant', price: 350 },
-                    { id: 'v-eclaircissant', name: 'Soin éclaircissant', price: 400 },
-                    { id: 'v-purifiant', name: 'Soin purifiant', price: 450 },
-                    { id: 'v-oxygenant', name: 'Soin oxygénant', price: 450 },
-                    { id: 'v-raffermissant', name: 'Soin raffermissant', price: 450 },
-                    { id: 'v-hydrafacial', name: 'Soin Hydrafacial', price: 500 },
-                    { id: 'v-antirides', name: 'Soin anti-rides', price: 500 },
-                    { id: 'v-juvenil', name: 'Soin juvénil', price: 500 },
-                    { id: 'v-eclat-hydratant', name: 'Soin éclat hydratant', price: 600 },
-                    { id: 'v-complet', name: 'Soin complet', price: 750 },
-                    { id: 'v-lifting', name: 'Soin lifting', price: 1000 }
                 ]
             }
         ]
@@ -209,15 +113,13 @@ var SERVICES = [
 
 /* ── ICÔNES SVG (stroke, fill:none, style Lucide) ── */
 var ICONS = {
-    coiffure: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" y1="4" x2="8.12" y2="15.88"/><line x1="14.47" y1="14.48" x2="20" y2="20"/><line x1="8.12" y1="8.12" x2="12" y2="12"/></svg>',
     ongles: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M18 11V6a2 2 0 0 0-4 0v5"/><path d="M14 10V4a2 2 0 0 0-4 0v7"/><path d="M10 10V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 0 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 16"/></svg>',
     maquillage: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="m9 11-6 6v3h9l3-3"/><path d="m22 2-4 4-5.17 5.17"/><path d="M7.5 13.5 11 17"/><path d="M14 6l2 2"/></svg>',
-    'soins-visage': '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>',
     esthetique: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M11 20A7 7 0 0 1 9.8 6.9C15.5 4.9 17 3.5 19 2c1 2 2 4.5 2 8 0 5.5-3.8 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>'
 };
 
 /* ── ORDRE DES CATÉGORIES DANS LA BANDE ── */
-var CATEGORY_ORDER = ['coiffure', 'ongles', 'maquillage', 'soins-visage', 'esthetique'];
+var CATEGORY_ORDER = ['ongles', 'maquillage', 'esthetique'];
 
 /* ── TABLE DE LOOKUP (construite à l'init) ── */
 var SERVICE_MAP = {};
