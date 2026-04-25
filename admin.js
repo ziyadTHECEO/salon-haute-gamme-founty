@@ -570,6 +570,10 @@ function updateRdvStatus(id, newStatus) {
         closeModal();
         loadCalendarData();
         loadAnalytics();
+
+        if (newStatus === 'completed') {
+            triggerAutoConsumption(id);
+        }
     });
 }
 
@@ -1270,5 +1274,75 @@ function addConsumption(assignmentId, source, rdvId) {
         .catch(function(err) {
             console.error('addConsumption error:', err);
             if (btn) { btn.disabled = false; btn.textContent = 'Valider'; }
+        });
+}
+
+/* ══════════════════════════════════════════
+   RH — AUTO-CONSOMMATION VIA RDV
+   ══════════════════════════════════════════ */
+
+function triggerAutoConsumption(rdvId) {
+    _supabase.from('reservations').select('*').eq('id', rdvId).single()
+        .then(function(res) {
+            if (res.error || !res.data) return;
+            var rdv = res.data;
+
+            /* Déterminer le(s) département(s) du RDV à partir des services */
+            var services = rdv.services || [];
+            var departments = [];
+            services.forEach(function(svc) {
+                var prefix = (svc.id || '').substring(0, 2);
+                if (prefix === 'c-') departments.push('Coiffure femme', 'Coiffure homme');
+                if (prefix === 'o-') departments.push('Onglerie');
+                if (prefix === 'e-') departments.push('Esthétique');
+                if (prefix === 'm-') departments.push('Maquillage');
+            });
+
+            if (departments.length === 0 || rhState.assignments.length === 0) return;
+
+            /* Chercher les assignments actifs dont le département du travailleur correspond */
+            var actives = rhState.assignments.filter(function(a) {
+                return a.status === 'active' && a.workers && departments.indexOf(a.workers.departement) !== -1;
+            });
+
+            actives.forEach(function(a) {
+                autoIncrementAssignment(a.id, rdvId);
+            });
+        })
+        .catch(function(err) {
+            console.error('triggerAutoConsumption error:', err);
+        });
+}
+
+function autoIncrementAssignment(assignmentId, rdvId) {
+    var assignment = rhState.assignments.find(function(a) { return a.id === assignmentId; });
+    if (!assignment) return;
+
+    var newServed = (assignment.clients_served || 0) + 1;
+    var cap       = assignment.products ? assignment.products.capacite_clients : 0;
+    var isEpuisee = newServed >= cap;
+
+    var updateData = { clients_served: newServed };
+    if (isEpuisee) {
+        updateData.status    = 'epuisee';
+        updateData.closed_at = new Date().toISOString();
+    }
+
+    _supabase.from('assignments').update(updateData).eq('id', assignmentId)
+        .then(function(res) {
+            if (res.error) { console.error('autoIncrementAssignment error:', res.error); return; }
+            _supabase.from('consumption_logs').insert({
+                assignment_id: assignmentId,
+                clients_count: 1,
+                source: 'auto',
+                rdv_id: rdvId
+            }).then(function() {
+                loadRH();
+            }).catch(function(err) {
+                console.error('auto consumption_logs insert error:', err);
+            });
+        })
+        .catch(function(err) {
+            console.error('autoIncrementAssignment fetch error:', err);
         });
 }
