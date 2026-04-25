@@ -1020,3 +1020,61 @@ document.addEventListener('DOMContentLoaded', function() {
         if (e.target === this) closeRhModal();
     });
 });
+
+/* ══════════════════════════════════════════
+   RH — AJOUTER TRAVAILLEUR
+   ══════════════════════════════════════════ */
+
+function openAddWorkerModal() {
+    var html = '';
+    html += '<div class="rh-form-group"><label for="rh-w-prenom">Prénom</label>';
+    html += '<input type="text" class="form-input" id="rh-w-prenom" placeholder="Prénom"></div>';
+    html += '<div class="rh-form-group"><label for="rh-w-nom">Nom</label>';
+    html += '<input type="text" class="form-input" id="rh-w-nom" placeholder="Nom"></div>';
+    html += '<div class="rh-form-group"><label for="rh-w-dept">Département</label>';
+    html += '<select class="form-input" id="rh-w-dept">';
+    html += '<option value="Coiffure femme">Coiffure femme</option>';
+    html += '<option value="Coiffure homme">Coiffure homme</option>';
+    html += '<option value="Onglerie">Onglerie</option>';
+    html += '<option value="Esthétique">Esthétique</option>';
+    html += '<option value="Maquillage">Maquillage</option>';
+    html += '<option value="Autre">Autre</option>';
+    html += '</select></div>';
+    html += '<p class="rh-modal-error" id="rh-w-error"></p>';
+    html += '<div class="rh-modal-actions">';
+    html += '<button class="btn-rh-cancel" onclick="closeRhModal()">Annuler</button>';
+    html += '<button class="btn-rh-submit" id="btn-rh-w-submit">Enregistrer</button></div>';
+
+    openRhModal('Ajouter un travailleur', html);
+    document.getElementById('btn-rh-w-submit').addEventListener('click', addWorker);
+}
+
+function addWorker() {
+    var prenom = document.getElementById('rh-w-prenom').value.trim();
+    var nom    = document.getElementById('rh-w-nom').value.trim();
+    var dept   = document.getElementById('rh-w-dept').value;
+    var errEl  = document.getElementById('rh-w-error');
+
+    if (!prenom || !nom) {
+        errEl.textContent = 'Prénom et nom sont obligatoires.';
+        return;
+    }
+
+    var btn = document.getElementById('btn-rh-w-submit');
+    btn.disabled = true; btn.textContent = '...';
+
+    _supabase.from('workers').insert({ nom: nom, prenom: prenom, departement: dept })
+        .then(function(res) {
+            if (res.error) {
+                errEl.textContent = 'Erreur: ' + res.error.message;
+                btn.disabled = false; btn.textContent = 'Enregistrer';
+                return;
+            }
+            closeRhModal();
+            loadRH();
+        })
+        .catch(function(err) {
+            console.error('addWorker error:', err);
+            btn.disabled = false; btn.textContent = 'Enregistrer';
+        });
+}
