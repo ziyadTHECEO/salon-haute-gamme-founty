@@ -1263,6 +1263,8 @@ function addConsumption(assignmentId, source, rdvId) {
             _supabase.from('consumption_logs').insert(logEntry).then(function() {
                 if (source !== 'auto') closeRhModal();
                 loadRH();
+            }).catch(function(err) {
+                console.error('consumption_logs insert error:', err);
             });
         })
         .catch(function(err) {
