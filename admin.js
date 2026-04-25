@@ -1192,3 +1192,81 @@ function assignProduct(workerId) {
         btn.disabled = false; btn.textContent = 'Assigner';
     });
 }
+
+/* ══════════════════════════════════════════
+   RH — SAISIE CONSOMMATION
+   ══════════════════════════════════════════ */
+
+function openAddConsumptionModal(assignmentId) {
+    var assignment = rhState.assignments.find(function(a) { return a.id === assignmentId; });
+    if (!assignment) return;
+
+    var wName   = assignment.workers ? (assignment.workers.prenom + ' ' + assignment.workers.nom) : '—';
+    var pName   = assignment.products ? assignment.products.nom : '—';
+    var cap     = assignment.products ? assignment.products.capacite_clients : 0;
+    var served  = assignment.clients_served || 0;
+    var restant = cap - served;
+
+    var html = '';
+    html += '<p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1rem">';
+    html += escapeHtml(wName) + ' — <strong style="color:var(--text-light)">' + escapeHtml(pName) + '</strong><br>';
+    html += 'Clients restants : <strong style="color:var(--text-light)">' + restant + ' / ' + cap + '</strong></p>';
+    html += '<div class="rh-form-group"><label for="rh-c-count">Nombre de clients servis à ajouter</label>';
+    html += '<input type="number" class="form-input" id="rh-c-count" placeholder="1" min="1" max="' + restant + '"></div>';
+    html += '<p class="rh-modal-error" id="rh-c-error"></p>';
+    html += '<div class="rh-modal-actions">';
+    html += '<button class="btn-rh-cancel" onclick="closeRhModal()">Annuler</button>';
+    html += '<button class="btn-rh-submit" id="btn-rh-c-submit">Valider</button></div>';
+
+    openRhModal('Saisie manuelle — Clients servis', html);
+    document.getElementById('btn-rh-c-submit').addEventListener('click', function() {
+        addConsumption(assignmentId, 'manuel', null);
+    });
+}
+
+function addConsumption(assignmentId, source, rdvId) {
+    var countEl = document.getElementById('rh-c-count');
+    var count   = parseInt(countEl ? countEl.value : '1');
+    var errEl   = document.getElementById('rh-c-error');
+
+    if (!count || count <= 0) {
+        if (errEl) errEl.textContent = 'Entrez un nombre valide.';
+        return;
+    }
+
+    var btn = document.getElementById('btn-rh-c-submit');
+    if (btn) { btn.disabled = true; btn.textContent = '...'; }
+
+    var assignment = rhState.assignments.find(function(a) { return a.id === assignmentId; });
+    if (!assignment) return;
+
+    var newServed = (assignment.clients_served || 0) + count;
+    var cap       = assignment.products ? assignment.products.capacite_clients : 0;
+    var isEpuisee = newServed >= cap;
+
+    var updateData = { clients_served: newServed };
+    if (isEpuisee) {
+        updateData.status    = 'epuisee';
+        updateData.closed_at = new Date().toISOString();
+    }
+
+    _supabase.from('assignments').update(updateData).eq('id', assignmentId)
+        .then(function(res) {
+            if (res.error) {
+                if (errEl) errEl.textContent = 'Erreur: ' + res.error.message;
+                if (btn) { btn.disabled = false; btn.textContent = 'Valider'; }
+                return;
+            }
+            var logEntry = { assignment_id: assignmentId, clients_count: count, source: source || 'manuel' };
+            if (rdvId) logEntry.rdv_id = rdvId;
+
+            _supabase.from('consumption_logs').insert(logEntry).then(function() {
+                if (source !== 'auto') closeRhModal();
+                loadRH();
+            });
+        })
+        .catch(function(err) {
+            console.error('addConsumption error:', err);
+            if (btn) { btn.disabled = false; btn.textContent = 'Valider'; }
+        });
+}
