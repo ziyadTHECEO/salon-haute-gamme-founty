@@ -996,3 +996,27 @@ function renderHistoryTable() {
     html += '</tbody></table></div>';
     wrap.innerHTML = html;
 }
+
+/* ══════════════════════════════════════════
+   MODALS RH — UTILITAIRES
+   ══════════════════════════════════════════ */
+
+function openRhModal(title, bodyHtml) {
+    document.getElementById('rh-modal-title').textContent = title;
+    document.getElementById('rh-modal-body').innerHTML = bodyHtml;
+    document.getElementById('rh-modal-overlay').classList.add('open');
+}
+
+function closeRhModal() {
+    document.getElementById('rh-modal-overlay').classList.remove('open');
+}
+
+/* Binding fermeture modal RH */
+document.addEventListener('DOMContentLoaded', function() {
+    var rhOverlay = document.getElementById('rh-modal-overlay');
+    var rhClose   = document.getElementById('rh-modal-close');
+    if (rhClose)   rhClose.addEventListener('click', closeRhModal);
+    if (rhOverlay) rhOverlay.addEventListener('click', function(e) {
+        if (e.target === this) closeRhModal();
+    });
+});
