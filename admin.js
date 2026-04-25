@@ -1129,3 +1129,66 @@ function addProduct() {
             btn.disabled = false; btn.textContent = 'Enregistrer';
         });
 }
+
+/* ══════════════════════════════════════════
+   RH — ASSIGNER PRODUIT
+   ══════════════════════════════════════════ */
+
+function openAssignProductModal(workerId) {
+    var worker = rhState.workers.find(function(w) { return w.id === workerId; });
+    if (!worker) return;
+
+    if (rhState.products.length === 0) {
+        alert('Ajoutez d\'abord un produit avant d\'assigner.');
+        return;
+    }
+
+    var options = rhState.products.map(function(p) {
+        return '<option value="' + p.id + '">' + escapeHtml(p.nom) + ' — ' + p.capacite_clients + ' clients — ' + Number(p.prix).toLocaleString('fr-FR') + ' DH</option>';
+    }).join('');
+
+    var html = '';
+    html += '<p style="font-size:0.8rem;color:var(--text-muted);margin-bottom:1rem">Travailleur : <strong style="color:var(--text-light)">' + escapeHtml(worker.prenom) + ' ' + escapeHtml(worker.nom) + '</strong></p>';
+    html += '<div class="rh-form-group"><label for="rh-a-product">Produit à assigner</label>';
+    html += '<select class="form-input" id="rh-a-product">' + options + '</select></div>';
+    html += '<p class="rh-modal-error" id="rh-a-error"></p>';
+    html += '<div class="rh-modal-actions">';
+    html += '<button class="btn-rh-cancel" onclick="closeRhModal()">Annuler</button>';
+    html += '<button class="btn-rh-submit" id="btn-rh-a-submit">Assigner</button></div>';
+
+    openRhModal('Assigner un produit', html);
+    document.getElementById('btn-rh-a-submit').addEventListener('click', function() {
+        assignProduct(workerId);
+    });
+}
+
+function assignProduct(workerId) {
+    var productId = document.getElementById('rh-a-product').value;
+    var errEl     = document.getElementById('rh-a-error');
+
+    if (!productId) {
+        errEl.textContent = 'Sélectionnez un produit.';
+        return;
+    }
+
+    var btn = document.getElementById('btn-rh-a-submit');
+    btn.disabled = true; btn.textContent = '...';
+
+    _supabase.from('assignments').insert({
+        worker_id: workerId,
+        product_id: productId,
+        clients_served: 0,
+        status: 'active'
+    }).then(function(res) {
+        if (res.error) {
+            errEl.textContent = 'Erreur: ' + res.error.message;
+            btn.disabled = false; btn.textContent = 'Assigner';
+            return;
+        }
+        closeRhModal();
+        loadRH();
+    }).catch(function(err) {
+        console.error('assignProduct error:', err);
+        btn.disabled = false; btn.textContent = 'Assigner';
+    });
+}
