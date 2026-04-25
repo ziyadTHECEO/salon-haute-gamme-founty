@@ -923,3 +923,76 @@ function bindAddWorkerBtn() {
     var btn = document.getElementById('btn-add-worker');
     if (btn) btn.onclick = openAddWorkerModal;
 }
+
+/* ══════════════════════════════════════════
+   RH — PRODUITS + HISTORIQUE
+   ══════════════════════════════════════════ */
+
+function renderProductsTable() {
+    var wrap = document.getElementById('products-table-wrap');
+    if (!wrap) return;
+
+    if (rhState.products.length === 0) {
+        wrap.innerHTML = '<p class="rh-empty">Aucun produit enregistré.</p>';
+        bindAddProductBtn();
+        return;
+    }
+
+    var html = '<div class="ca-table-wrap"><table class="rh-table">';
+    html += '<thead><tr><th>Produit</th><th>Prix</th><th>Capacité</th><th>Assignments actifs</th></tr></thead><tbody>';
+
+    rhState.products.forEach(function(p) {
+        var actives = rhState.assignments.filter(function(a) {
+            return a.product_id === p.id && a.status === 'active';
+        });
+        html += '<tr>';
+        html += '<td>' + escapeHtml(p.nom) + '</td>';
+        html += '<td>' + Number(p.prix).toLocaleString('fr-FR') + ' DH</td>';
+        html += '<td>' + p.capacite_clients + ' clients</td>';
+        html += '<td>' + (actives.length > 0
+            ? actives.length + ' travailleur(s)'
+            : '<span style="color:var(--text-muted)">Aucun</span>') + '</td>';
+        html += '</tr>';
+    });
+
+    html += '</tbody></table></div>';
+    wrap.innerHTML = html;
+    bindAddProductBtn();
+}
+
+function bindAddProductBtn() {
+    var btn = document.getElementById('btn-add-product');
+    if (btn) btn.onclick = openAddProductModal;
+}
+
+function renderHistoryTable() {
+    var wrap = document.getElementById('history-table-wrap');
+    if (!wrap) return;
+
+    var epuisees = rhState.assignments.filter(function(a) { return a.status === 'epuisee'; });
+
+    if (epuisees.length === 0) {
+        wrap.innerHTML = '<p class="rh-empty">Aucune bouteille épuisée.</p>';
+        return;
+    }
+
+    var html = '<div class="ca-table-wrap"><table class="rh-table">';
+    html += '<thead><tr><th>Travailleur</th><th>Produit</th><th>Clients réalisés</th><th>Assigné le</th><th>Épuisé le</th></tr></thead><tbody>';
+
+    epuisees.forEach(function(a) {
+        var wName = a.workers ? (a.workers.prenom + ' ' + a.workers.nom) : '—';
+        var pName = a.products ? a.products.nom : '—';
+        var assignedAt = a.assigned_at ? new Date(a.assigned_at).toLocaleDateString('fr-FR') : '—';
+        var closedAt   = a.closed_at   ? new Date(a.closed_at).toLocaleDateString('fr-FR')   : '—';
+        html += '<tr>';
+        html += '<td>' + escapeHtml(wName) + '</td>';
+        html += '<td>' + escapeHtml(pName) + '</td>';
+        html += '<td>' + (a.clients_served || 0) + '</td>';
+        html += '<td>' + assignedAt + '</td>';
+        html += '<td>' + closedAt + '</td>';
+        html += '</tr>';
+    });
+
+    html += '</tbody></table></div>';
+    wrap.innerHTML = html;
+}
