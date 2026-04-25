@@ -1011,3 +1011,280 @@
     .ca-form-group, .ca-form-group-note { width: 100%; }
     .stat-sub-row { flex-direction: column; gap: 0.3rem; }
 }
+
+/* ══════════════════════════════════════
+   RH & STOCK — BADGE ONGLET
+   ══════════════════════════════════════ */
+
+.rh-alert-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #c0392b;
+    color: #fff;
+    font-size: 0.6rem;
+    font-weight: 700;
+    min-width: 16px;
+    height: 16px;
+    border-radius: 999px;
+    padding: 0 4px;
+    margin-left: 6px;
+    vertical-align: middle;
+    letter-spacing: 0;
+}
+
+/* ══════════════════════════════════════
+   RH — BANDEAU ALERTES
+   ══════════════════════════════════════ */
+
+.rh-alert-banner {
+    margin: 1.5rem 1.5rem 0;
+    background: rgba(192, 57, 43, 0.08);
+    border: 1px solid rgba(192, 57, 43, 0.25);
+    border-radius: 4px;
+    padding: 1rem 1.2rem;
+}
+
+.rh-alert-item {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 0.8rem;
+    font-weight: 500;
+    padding: 0.3rem 0;
+    color: #c0392b;
+}
+
+.rh-alert-item.critical {
+    color: #7b1818;
+    font-weight: 700;
+}
+
+.rh-alert-item i { width: 16px; text-align: center; }
+
+/* ══════════════════════════════════════
+   RH — SECTIONS
+   ══════════════════════════════════════ */
+
+.rh-section {
+    margin: 1.5rem;
+    background: var(--noir-card);
+    border: 1px solid rgba(196,144,45,0.12);
+    padding: 1.5rem;
+}
+
+.rh-section-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 1.2rem;
+}
+
+.rh-section-title {
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+}
+
+.btn-rh-add {
+    background: var(--gold);
+    color: #fff;
+    border: none;
+    padding: 0.45rem 1rem;
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-rh-add:hover { opacity: 0.85; }
+
+.rh-empty {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    padding: 1rem 0;
+}
+
+/* ══════════════════════════════════════
+   RH — TABLEAUX
+   ══════════════════════════════════════ */
+
+.rh-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8rem;
+}
+
+.rh-table th {
+    text-align: left;
+    font-size: 0.6rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid rgba(196,144,45,0.12);
+}
+
+.rh-table td {
+    padding: 0.7rem 0.75rem;
+    border-bottom: 1px solid rgba(196,144,45,0.07);
+    color: var(--text-light);
+    vertical-align: top;
+}
+
+.rh-table tr:last-child td { border-bottom: none; }
+
+/* Pillules état produit */
+.stock-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 999px;
+    font-size: 0.68rem;
+    font-weight: 600;
+    margin: 0.15rem 0.15rem 0.15rem 0;
+    white-space: nowrap;
+}
+
+.stock-pill.ok {
+    background: rgba(39, 174, 96, 0.12);
+    color: #1a7a44;
+}
+
+.stock-pill.low {
+    background: rgba(192, 57, 43, 0.12);
+    color: #c0392b;
+}
+
+.stock-pill.critical {
+    background: rgba(123, 24, 24, 0.15);
+    color: #7b1818;
+    animation: blink-critical 1.4s ease-in-out infinite;
+}
+
+@keyframes blink-critical {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0.5; }
+}
+
+.stock-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+}
+
+/* Boutons actions inline */
+.btn-rh-action {
+    background: none;
+    border: 1px solid rgba(196,144,45,0.3);
+    color: var(--gold);
+    padding: 0.3rem 0.7rem;
+    font-family: var(--font-body);
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    margin-right: 0.4rem;
+    margin-bottom: 0.3rem;
+    transition: all 0.2s;
+    white-space: nowrap;
+}
+
+.btn-rh-action:hover { background: var(--gold-dim); }
+
+/* ══════════════════════════════════════
+   RH — MODAL
+   ══════════════════════════════════════ */
+
+.rh-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(60, 38, 20, 0.55);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+}
+
+.rh-modal-overlay.open { display: flex; }
+
+.rh-modal-card {
+    background: var(--noir-card);
+    border: 1px solid rgba(196,144,45,0.15);
+    padding: 2rem 2.2rem;
+    width: 100%;
+    max-width: 440px;
+    position: relative;
+}
+
+.rh-modal-title {
+    font-family: var(--font-heading);
+    font-size: 1.3rem;
+    font-weight: 600;
+    color: var(--gold);
+    margin-bottom: 1.5rem;
+}
+
+.rh-form-group { margin-bottom: 1.1rem; }
+
+.rh-form-group label {
+    display: block;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    margin-bottom: 0.4rem;
+}
+
+.rh-modal-actions {
+    display: flex;
+    gap: 0.8rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+
+.btn-rh-cancel {
+    background: none;
+    border: 1px solid rgba(196,144,45,0.25);
+    color: var(--text-muted);
+    padding: 0.55rem 1.2rem;
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn-rh-submit {
+    background: var(--gold);
+    color: #fff;
+    border: none;
+    padding: 0.55rem 1.4rem;
+    font-family: var(--font-body);
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: opacity 0.2s;
+}
+
+.btn-rh-submit:hover { opacity: 0.85; }
+.btn-rh-submit:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.rh-modal-error {
+    font-size: 0.72rem;
+    color: #c0392b;
+    margin-top: 0.5rem;
+    min-height: 1rem;
+}
