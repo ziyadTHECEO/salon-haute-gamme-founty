@@ -861,3 +861,65 @@ function renderAlertBanner() {
     });
     inner.innerHTML = html;
 }
+
+/* ══════════════════════════════════════════
+   RH — TRAVAILLEURS
+   ══════════════════════════════════════════ */
+
+function renderWorkersTable() {
+    var wrap = document.getElementById('workers-table-wrap');
+    if (!wrap) return;
+
+    if (rhState.workers.length === 0) {
+        wrap.innerHTML = '<p class="rh-empty">Aucun travailleur enregistré.</p>';
+        bindAddWorkerBtn();
+        return;
+    }
+
+    var html = '<div class="ca-table-wrap"><table class="rh-table">';
+    html += '<thead><tr><th>Prénom Nom</th><th>Département</th><th>Produits actifs</th><th>Actions</th></tr></thead><tbody>';
+
+    rhState.workers.forEach(function(w) {
+        var actives = rhState.assignments.filter(function(a) {
+            return a.worker_id === w.id && a.status === 'active';
+        });
+
+        var pillsHtml = '';
+        if (actives.length === 0) {
+            pillsHtml = '<span style="color:var(--text-muted);font-size:0.75rem">Aucun produit assigné</span>';
+        } else {
+            actives.forEach(function(a) {
+                var state   = computeAlertState(a);
+                var cap     = a.products ? a.products.capacite_clients : 0;
+                var restant = cap - (a.clients_served || 0);
+                var pName   = a.products ? a.products.nom : '?';
+                var label   = state === 'critical'
+                    ? pName + ' — ÉPUISÉE'
+                    : pName + ' (' + restant + '/' + cap + ')';
+                pillsHtml += '<span class="stock-pill ' + state + '"><span class="stock-dot"></span>' + escapeHtml(label) + '</span>';
+            });
+        }
+
+        var actionsHtml = '<button class="btn-rh-action" onclick="openAssignProductModal(\'' + w.id + '\')">Assigner produit</button>';
+        actives.forEach(function(a) {
+            var pName = a.products ? a.products.nom : '?';
+            actionsHtml += '<button class="btn-rh-action" onclick="openAddConsumptionModal(\'' + a.id + '\')">+ Clients (' + escapeHtml(pName) + ')</button>';
+        });
+
+        html += '<tr>';
+        html += '<td>' + escapeHtml(w.prenom) + ' ' + escapeHtml(w.nom) + '</td>';
+        html += '<td>' + escapeHtml(w.departement) + '</td>';
+        html += '<td>' + pillsHtml + '</td>';
+        html += '<td>' + actionsHtml + '</td>';
+        html += '</tr>';
+    });
+
+    html += '</tbody></table></div>';
+    wrap.innerHTML = html;
+    bindAddWorkerBtn();
+}
+
+function bindAddWorkerBtn() {
+    var btn = document.getElementById('btn-add-worker');
+    if (btn) btn.onclick = openAddWorkerModal;
+}
