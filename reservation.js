@@ -84,45 +84,42 @@ var SERVICES = [
                 name: 'Mains',
                 services: [
                     { id: 'o-manucure', name: 'Manucure', price: 50 },
-                    { id: 'o-soin-manucure', name: 'Soin manucure', price: 100 },
-                    { id: 'o-soin-spa-mains', name: 'Soin spa mains', price: 150 }
+                    { id: 'o-manucure-spa', name: 'Manucure SPA', price: 100 },
+                    { id: 'o-paraffine-mains', name: 'Paraffine mains', price: 50 }
                 ]
             },
             {
                 name: 'Pieds',
                 services: [
                     { id: 'o-pedicure', name: 'Pédicure', price: 100 },
-                    { id: 'o-soin-pedicure', name: 'Soin pédicure', price: 150 },
-                    { id: 'o-soin-spa-pedicure', name: 'Soin spa pédicure', price: 250 },
-                    { id: 'o-pedicure-royale', name: 'Pédicure royale', price: 350 }
+                    { id: 'o-pedicure-spa', name: 'Pédicure SPA', price: 200 },
+                    { id: 'o-pedicure-royal', name: 'Pédicure Royal', price: 350 },
+                    { id: 'o-paraffine-pieds', name: 'Paraffine pieds', price: 50 }
+                ]
+            },
+            {
+                name: 'Faux ongles & Gel',
+                services: [
+                    { id: 'o-faux-classique', name: 'Faux ongles + vernis classique', price: 150 },
+                    { id: 'o-faux-gel', name: 'Faux ongles + gel', price: 200 },
+                    { id: 'o-gel', name: 'Gel', price: 350 },
+                    { id: 'o-biab', name: 'BIAB', price: 250 },
+                    { id: 'o-biab-extensions', name: 'BIAB + extensions', price: 350 }
                 ]
             },
             {
                 name: 'Vernis',
                 services: [
-                    { id: 'o-vernis-normal', name: 'Vernis normal', price: 30 },
-                    { id: 'o-vernis-opi', name: 'Vernis OPI', price: 50 },
-                    { id: 'o-vernis-permanent', name: 'Vernis permanent', price: 100 },
-                    { id: 'o-vernis-semilac', name: 'Vernis permanent Semilac', price: 150 },
-                    { id: 'o-biab', name: 'BIAB', price: 250 }
-                ]
-            },
-            {
-                name: 'Faux ongles',
-                services: [
-                    { id: 'o-faux-normal', name: 'Faux ongles + vernis normal', price: 130 },
-                    { id: 'o-faux-permanent', name: 'Faux ongles + vernis permanent', price: 180 },
-                    { id: 'o-faux-semilac', name: 'Faux ongles + permanent Semilac', price: 250 },
-                    { id: 'o-faux-gel', name: 'Faux ongles en gel', price: 300 },
-                    { id: 'o-faux-gel-semilac', name: 'Faux ongles gel + Semilac', price: 400 }
+                    { id: 'o-vernis-classique', name: 'Vernis classique', price: 50 },
+                    { id: 'o-vernis-gel', name: 'Vernis gel', price: 100 }
                 ]
             },
             {
                 name: 'Retouche & Dépose',
                 services: [
-                    { id: 'o-remplissage', name: 'Remplissage gel', price: 100 },
-                    { id: 'o-depose-permanent', name: 'Dépose permanent', price: 70 },
-                    { id: 'o-depose-gel', name: 'Dépose gel', price: 100 }
+                    { id: 'o-remplissage-gel', name: 'Remplissage gel', price: 200 },
+                    { id: 'o-depose-gel', name: 'Dépose gel', price: 100 },
+                    { id: 'o-depose-vernis-gel', name: 'Dépose vernis gel', price: 50 }
                 ]
             }
         ]
@@ -166,17 +163,18 @@ var SERVICES = [
                 name: 'Épilation',
                 services: [
                     { id: 'e-sourcils', name: 'Sourcils', price: 40 },
-                    { id: 'e-duvet', name: 'Duvet', price: 30 },
+                    { id: 'e-levre', name: 'Lèvre supérieure', price: 30 },
                     { id: 'e-menton', name: 'Menton', price: 30 },
-                    { id: 'e-visage', name: 'Visage complet', price: 100 },
+                    { id: 'e-visage', name: 'Visage complet', price: 120 },
                     { id: 'e-aisselles', name: 'Aisselles', price: 50 },
                     { id: 'e-demi-bras', name: '1/2 bras', price: 50 },
                     { id: 'e-bras', name: 'Bras complets', price: 80 },
-                    { id: 'e-ventre', name: 'Ventre', price: 50 },
-                    { id: 'e-dos', name: 'Dos', price: 100 },
                     { id: 'e-demi-jambes', name: '1/2 jambes', price: 70 },
-                    { id: 'e-jambes', name: 'Jambes complètes', price: 120 },
-                    { id: 'e-complete', name: 'Épilation complète', price: 350 }
+                    { id: 'e-jambes', name: 'Jambes complètes', price: 130 },
+                    { id: 'e-ventre', name: 'Ventre', price: 100 },
+                    { id: 'e-dos', name: 'Dos', price: 70 },
+                    { id: 'e-complete', name: 'Corps complet', price: 400 },
+                    { id: 'e-maillot', name: 'Maillot intégral (Brésilien)', price: 120 }
                 ]
             }
         ]
@@ -186,12 +184,23 @@ var SERVICES = [
         name: 'Maquillage',
         subcategories: [
             {
-                name: 'Maquillage & Cils',
+                name: 'Regard & Cils',
                 services: [
-                    { id: 'm-coloration-sourcils', name: 'Coloration sourcils + épilation', price: 100 },
-                    { id: 'm-faux-cils', name: 'Pose faux cils', price: 100 },
-                    { id: 'm-jour', name: 'Maquillage du jour', price: 150 },
-                    { id: 'm-soir', name: 'Maquillage du soir avec cils', price: 300 }
+                    { id: 'm-teinture-sourcils', name: 'Teinture sourcils', price: 50 },
+                    { id: 'm-extensions-normal', name: 'Extensions cils (normal)', price: 100 },
+                    { id: 'm-extensions-p300', name: 'Extensions cils permanent (300)', price: 300 },
+                    { id: 'm-extensions-p400', name: 'Extensions cils permanent (400)', price: 400 },
+                    { id: 'm-extensions-p500', name: 'Extensions cils permanent (500)', price: 500 },
+                    { id: 'm-remplissage-cils', name: 'Remplissage cils', price: 200 },
+                    { id: 'm-depose-extensions', name: 'Dépose extensions cils', price: 50 },
+                    { id: 'm-lash-lift', name: 'Lash lift', price: 200 },
+                    { id: 'm-brow-lift', name: 'Brow lift', price: 200 }
+                ]
+            },
+            {
+                name: 'Maquillage',
+                services: [
+                    { id: 'm-invitee', name: 'Maquillage invitée', price: 300 }
                 ]
             }
         ]
