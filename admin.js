@@ -1078,3 +1078,54 @@ function addWorker() {
             btn.disabled = false; btn.textContent = 'Enregistrer';
         });
 }
+
+/* ══════════════════════════════════════════
+   RH — AJOUTER PRODUIT
+   ══════════════════════════════════════════ */
+
+function openAddProductModal() {
+    var html = '';
+    html += '<div class="rh-form-group"><label for="rh-p-nom">Nom du produit</label>';
+    html += '<input type="text" class="form-input" id="rh-p-nom" placeholder="Ex: Protéine lissante"></div>';
+    html += '<div class="rh-form-group"><label for="rh-p-prix">Prix (DH)</label>';
+    html += '<input type="number" class="form-input" id="rh-p-prix" placeholder="120" min="1" step="0.01"></div>';
+    html += '<div class="rh-form-group"><label for="rh-p-cap">Capacité approx. (nb clients par unité)</label>';
+    html += '<input type="number" class="form-input" id="rh-p-cap" placeholder="6" min="1"></div>';
+    html += '<p class="rh-modal-error" id="rh-p-error"></p>';
+    html += '<div class="rh-modal-actions">';
+    html += '<button class="btn-rh-cancel" onclick="closeRhModal()">Annuler</button>';
+    html += '<button class="btn-rh-submit" id="btn-rh-p-submit">Enregistrer</button></div>';
+
+    openRhModal('Ajouter un produit', html);
+    document.getElementById('btn-rh-p-submit').addEventListener('click', addProduct);
+}
+
+function addProduct() {
+    var nom   = document.getElementById('rh-p-nom').value.trim();
+    var prix  = parseFloat(document.getElementById('rh-p-prix').value);
+    var cap   = parseInt(document.getElementById('rh-p-cap').value);
+    var errEl = document.getElementById('rh-p-error');
+
+    if (!nom || !prix || prix <= 0 || !cap || cap <= 0) {
+        errEl.textContent = 'Tous les champs sont obligatoires et doivent être valides.';
+        return;
+    }
+
+    var btn = document.getElementById('btn-rh-p-submit');
+    btn.disabled = true; btn.textContent = '...';
+
+    _supabase.from('products').insert({ nom: nom, prix: prix, capacite_clients: cap })
+        .then(function(res) {
+            if (res.error) {
+                errEl.textContent = 'Erreur: ' + res.error.message;
+                btn.disabled = false; btn.textContent = 'Enregistrer';
+                return;
+            }
+            closeRhModal();
+            loadRH();
+        })
+        .catch(function(err) {
+            console.error('addProduct error:', err);
+            btn.disabled = false; btn.textContent = 'Enregistrer';
+        });
+}
