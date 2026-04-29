@@ -200,7 +200,9 @@ var SERVICES = [
             {
                 name: 'Maquillage',
                 services: [
-                    { id: 'm-invitee', name: 'Maquillage invitée', price: 300 }
+                    { id: 'm-invitee',  name: 'Maquillage invitée',  price: 300 },
+                    { id: 'm-mariee',   name: 'Maquillage mariée',   price: null, prixSurPlace: true },
+                    { id: 'm-fiancee',  name: 'Maquillage fiancée',  price: null, prixSurPlace: true }
                 ]
             }
         ]
@@ -330,7 +332,9 @@ function renderAccordionPanel(catId) {
                 html += '<div class="svc-row' + (isSel ? ' selected' : '') + '" data-id="' + svc.id + '">';
                 html += '<span class="svc-check"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></span>';
                 html += '<span class="svc-name">' + svc.name + '</span>';
-                html += '<span class="svc-price">' + svc.price + ' DH</span>';
+                if (!svc.prixSurPlace) {
+                    html += '<span class="svc-price">' + svc.price + ' DH</span>';
+                }
                 html += '</div>';
             });
             html += '</div>';
@@ -530,7 +534,7 @@ function goToStep(n) {
 function getTotal() {
     var total = 0;
     state.selected.forEach(function(id) {
-        if (SERVICE_MAP[id]) total += SERVICE_MAP[id].price;
+        if (SERVICE_MAP[id] && SERVICE_MAP[id].price) total += SERVICE_MAP[id].price;
     });
     return total;
 }
@@ -588,6 +592,7 @@ function submitReservation() {
         btn.disabled = true;
         btn.textContent = 'Envoi en cours...';
 
+        var hasPrixSurPlace = services.some(function(s) { return s.prixSurPlace; });
         var payload = {
             client_name: state.name,
             client_phone: state.phone,
@@ -598,7 +603,8 @@ function submitReservation() {
             total: 0,
             advance: 0,
             status: 'confirmed',
-            advance_paid: false
+            advance_paid: false,
+            needs_compta: hasPrixSurPlace
         };
 
         _supabase.from('reservations').insert([payload]).then(function(res) {
