@@ -103,8 +103,9 @@
 
         <!-- TAB NAV -->
         <div class="tab-nav">
-            <button class="tab-btn active" data-tab="analytics">
+            <button class="tab-btn active" data-tab="analytics" id="tab-btn-analytics">
                 <i class="fas fa-chart-bar"></i> Analytique
+                <span class="compta-alert-badge" id="compta-alert-badge" style="display:none">0</span>
             </button>
             <button class="tab-btn" data-tab="calendar">
                 <i class="fas fa-calendar-alt"></i> Calendrier
@@ -119,6 +120,14 @@
              TAB 1 — ANALYTIQUE
              ════════════════════════════════ -->
         <div class="tab-content active" id="tab-analytics">
+            <!-- BANDEAU COMPTA EN ATTENTE -->
+            <div class="compta-pending-banner" id="compta-pending-banner" style="display:none">
+                <div class="compta-pending-header">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <span>Prestations à prix libre — à ajouter à la compta</span>
+                </div>
+                <div class="compta-pending-list" id="compta-pending-list"></div>
+            </div>
 
             <!-- STAT CARDS -->
             <div class="stat-card stat-card-wide">
