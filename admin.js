@@ -102,6 +102,7 @@ function showDashboard(user) {
     loadAnalytics();
     initCalendar();
     loadRH();
+    loadComptaPending();
 }
 
 /* ══════════════════════════════════════════
@@ -1345,4 +1346,74 @@ function autoIncrementAssignment(assignmentId, rdvId) {
         .catch(function(err) {
             console.error('autoIncrementAssignment fetch error:', err);
         });
+}
+
+/* ══════════════════════════════════════════
+   COMPTA PENDING
+   ══════════════════════════════════════════ */
+
+function loadComptaPending() {
+    _supabase
+        .from('reservations')
+        .select('id, client_name, date, time, status, services')
+        .eq('needs_compta', true)
+        .order('date', { ascending: true })
+        .then(function(res) {
+            renderComptaPendingBanner(res.data || []);
+        })
+        .catch(function(err) {
+            console.error('loadComptaPending error:', err);
+            renderComptaPendingBanner([]);
+        });
+}
+
+function renderComptaPendingBanner(rdvs) {
+    var banner = document.getElementById('compta-pending-banner');
+    var list   = document.getElementById('compta-pending-list');
+    var badge  = document.getElementById('compta-alert-badge');
+
+    if (!banner || !list) return;
+
+    if (rdvs.length === 0) {
+        banner.style.display = 'none';
+        if (badge) badge.style.display = 'none';
+        return;
+    }
+
+    banner.style.display = '';
+    if (badge) {
+        badge.style.display = 'inline-flex';
+        badge.textContent = rdvs.length;
+    }
+
+    var monthNames = ['jan','fév','mar','avr','mai','juin','juil','août','sep','oct','nov','déc'];
+
+    var html = '';
+    rdvs.forEach(function(rdv) {
+        var isUrgent = rdv.status === 'completed';
+        var dateObj  = new Date(rdv.date + 'T00:00:00');
+        var dateLabel = dateObj.getDate() + ' ' + monthNames[dateObj.getMonth()] + ' ' + dateObj.getFullYear();
+
+        var svcNames = '';
+        if (rdv.services && Array.isArray(rdv.services)) {
+            svcNames = rdv.services
+                .filter(function(s) { return s.id === 'm-mariee' || s.id === 'm-fiancee'; })
+                .map(function(s) { return s.name; })
+                .join(', ');
+        }
+
+        var urgentLabel = isUrgent ? ' — <strong>Service terminé</strong>' : '';
+
+        html += '<div class="compta-pending-item' + (isUrgent ? ' urgent' : '') + '">';
+        html += '<div class="compta-pending-info">';
+        html += '<span class="compta-pending-name">' + escapeHtml(rdv.client_name) + ' — ' + escapeHtml(svcNames) + '</span>';
+        html += '<span class="compta-pending-meta">' + dateLabel + ' à ' + (rdv.time || '') + urgentLabel + '</span>';
+        html += '</div>';
+        html += '<button class="btn-compta-add" onclick="openComptaModal(\'' + rdv.id + '\',\'' + escapeHtml(rdv.client_name) + '\',\'' + escapeHtml(svcNames) + '\',\'' + rdv.date + '\')">';
+        html += 'Ajouter à la compta';
+        html += '</button>';
+        html += '</div>';
+    });
+
+    list.innerHTML = html;
 }
