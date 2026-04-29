@@ -571,6 +571,7 @@ function updateRdvStatus(id, newStatus) {
         closeModal();
         loadCalendarData();
         loadAnalytics();
+        loadComptaPending();
 
         if (newStatus === 'completed') {
             triggerAutoConsumption(id);
@@ -1416,4 +1417,67 @@ function renderComptaPendingBanner(rdvs) {
     });
 
     list.innerHTML = html;
+}
+
+function openComptaModal(rdvId, clientName, svcNames, date) {
+    var bodyHtml =
+        '<div class="rh-form-group">' +
+        '<label>Client</label>' +
+        '<input type="text" class="rh-form-input" id="cm-p-client" value="' + escapeHtml(clientName) + '" readonly>' +
+        '</div>' +
+        '<div class="rh-form-group">' +
+        '<label>Service</label>' +
+        '<input type="text" class="rh-form-input" id="cm-p-svc" value="' + escapeHtml(svcNames) + '" readonly>' +
+        '</div>' +
+        '<div class="rh-form-group">' +
+        '<label>Montant (DH)</label>' +
+        '<input type="number" class="rh-form-input" id="cm-p-montant" placeholder="Montant en DH" min="1">' +
+        '</div>' +
+        '<div class="rh-modal-error" id="cm-p-error"></div>' +
+        '<div style="display:flex;gap:10px;margin-top:8px;">' +
+        '<button class="btn-rh-cancel" onclick="closeRhModal()">Annuler</button>' +
+        '<button class="btn-rh-submit" onclick="saveComptaPending(\'' + rdvId + '\',\'' + escapeHtml(clientName) + '\',\'' + escapeHtml(svcNames) + '\',\'' + date + '\')">Enregistrer</button>' +
+        '</div>';
+
+    openRhModal('Ajouter à la compta', bodyHtml);
+}
+
+function saveComptaPending(rdvId, clientName, svcNames, date) {
+    var montantEl = document.getElementById('cm-p-montant');
+    var errEl     = document.getElementById('cm-p-error');
+    var montant   = parseInt(montantEl ? montantEl.value : '0');
+
+    if (!montant || montant <= 0) {
+        if (errEl) errEl.textContent = 'Veuillez entrer un montant valide.';
+        return;
+    }
+
+    var note = clientName + ' — ' + svcNames;
+
+    _supabase.from('ca_manuel')
+        .insert({ date: date, categorie: 'Maquillage', montant: montant, note: note })
+        .then(function(res) {
+            if (res.error) {
+                if (errEl) errEl.textContent = 'Erreur: ' + res.error.message;
+                return;
+            }
+            _supabase.from('reservations')
+                .update({ needs_compta: false })
+                .eq('id', rdvId)
+                .then(function() {
+                    closeRhModal();
+                    loadComptaPending();
+                    loadAnalytics();
+                    loadCaManuel();
+                })
+                .catch(function(err) {
+                    console.error('saveComptaPending update error:', err);
+                    closeRhModal();
+                    loadComptaPending();
+                });
+        })
+        .catch(function(err) {
+            console.error('saveComptaPending insert error:', err);
+            if (errEl) errEl.textContent = 'Erreur de connexion.';
+        });
 }
