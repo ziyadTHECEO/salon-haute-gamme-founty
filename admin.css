@@ -1288,3 +1288,94 @@
     margin-top: 0.5rem;
     min-height: 1rem;
 }
+
+/* ── COMPTA PENDING BANNER ── */
+.compta-pending-banner {
+    background: linear-gradient(135deg, rgba(196,144,45,0.12), rgba(196,144,45,0.06));
+    border: 1px solid var(--gold);
+    border-radius: 10px;
+    padding: 14px 18px;
+    margin-bottom: 18px;
+}
+
+.compta-pending-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 0.82rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 10px;
+}
+
+.compta-pending-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    background: var(--noir-card);
+    border-radius: 7px;
+    margin-bottom: 6px;
+    font-size: 0.87rem;
+    gap: 10px;
+}
+
+.compta-pending-item:last-child { margin-bottom: 0; }
+
+.compta-pending-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 1;
+}
+
+.compta-pending-name {
+    font-weight: 500;
+    color: var(--cream);
+}
+
+.compta-pending-meta {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+}
+
+.compta-pending-item.urgent .compta-pending-name {
+    color: #c0392b;
+}
+
+.btn-compta-add {
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: var(--gold);
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    padding: 6px 12px;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: opacity 0.2s;
+}
+
+.btn-compta-add:hover { opacity: 0.85; }
+
+/* Badge sur onglet Analytique */
+.compta-alert-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: #c0392b;
+    color: #fff;
+    border-radius: 50%;
+    font-size: 0.65rem;
+    font-weight: 700;
+    width: 16px;
+    height: 16px;
+    margin-left: 4px;
+    line-height: 1;
+}
