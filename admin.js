@@ -503,8 +503,8 @@ function openModal(rdv) {
         html += '<div class="modal-row"><span class="modal-label">Email</span><span class="modal-value">' + escapeHtml(rdv.client_email) + '</span></div>';
     }
 
-    html += '<div class="modal-row"><span class="modal-label">Date</span><span class="modal-value">' + rdv.date + '</span></div>';
-    html += '<div class="modal-row"><span class="modal-label">Heure</span><span class="modal-value">' + rdv.time + '</span></div>';
+    html += '<div class="modal-row"><span class="modal-label">Date</span><span class="modal-value">' + escapeHtml(String(rdv.date || '')) + '</span></div>';
+    html += '<div class="modal-row"><span class="modal-label">Heure</span><span class="modal-value">' + escapeHtml(String(rdv.time || '')) + '</span></div>';
 
     if (rdv.note) {
         html += '<div class="modal-row"><span class="modal-label">Note</span><span class="modal-value">' + escapeHtml(rdv.note) + '</span></div>';
@@ -515,7 +515,7 @@ function openModal(rdv) {
     /* Services */
     var services = rdv.services || [];
     services.forEach(function(svc) {
-        html += '<div class="modal-svc-line"><span>' + escapeHtml(svc.name) + '</span><span class="price">' + svc.price + ' DH</span></div>';
+        html += '<div class="modal-svc-line"><span>' + escapeHtml(svc.name) + '</span><span class="price">' + escapeHtml(String(svc.price || '')) + ' DH</span></div>';
     });
 
     html += '<div class="modal-divider"></div>';
@@ -576,6 +576,9 @@ function updateRdvStatus(id, newStatus) {
         if (newStatus === 'completed') {
             triggerAutoConsumption(id);
         }
+    }).catch(function(err) {
+        console.error('updateRdvStatus error:', err);
+        alert('Erreur de connexion. Veuillez réessayer.');
     });
 }
 
@@ -1410,13 +1413,22 @@ function renderComptaPendingBanner(rdvs) {
         html += '<span class="compta-pending-name">' + escapeHtml(rdv.client_name) + ' — ' + escapeHtml(svcNames) + '</span>';
         html += '<span class="compta-pending-meta">' + dateLabel + ' à ' + (rdv.time || '') + urgentLabel + '</span>';
         html += '</div>';
-        html += '<button class="btn-compta-add" onclick="openComptaModal(\'' + rdv.id + '\',\'' + escapeHtml(rdv.client_name) + '\',\'' + escapeHtml(svcNames) + '\',\'' + rdv.date + '\')">';
+        html += '<button class="btn-compta-add"'
+            + ' data-rdv-id="' + escapeHtml(String(rdv.id)) + '"'
+            + ' data-client="' + escapeHtml(rdv.client_name) + '"'
+            + ' data-svcs="' + escapeHtml(svcNames) + '"'
+            + ' data-date="' + escapeHtml(rdv.date) + '">';
         html += 'Ajouter à la compta';
         html += '</button>';
         html += '</div>';
     });
 
     list.innerHTML = html;
+    list.querySelectorAll('.btn-compta-add').forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            openComptaModal(this.dataset.rdvId, this.dataset.client, this.dataset.svcs, this.dataset.date);
+        });
+    });
 }
 
 function openComptaModal(rdvId, clientName, svcNames, date) {
